@@ -1,4 +1,5 @@
-:- module(explain, [explain/2, proof_step/2, theorem_proof_steps/2]).
+:- module(explain, [explain/2, proof_step/2, theorem_proof_steps/2,
+                    export_proof_json/2, convert_proof_to_html/2]).
 
 % theorem_proof_steps(+Theorem, -Steps)
 %
@@ -97,3 +98,30 @@ explain(sum_cubes, Steps) :-
         "The sum 1\u00b3 + 2\u00b3 + ... + n\u00b3 equals the square of the triangular number.",
         "So the closed form is (n(n+1)/2)\u00b2."
     ].
+
+% export_proof_json(+Theorem, -JSON)
+%
+% Serialize the proof steps for Theorem as a JSON-like atom.
+% Each step is rendered as {"formal": "...", "explanation": "..."}.
+export_proof_json(Theorem, JSON) :-
+    theorem_proof_steps(Theorem, Steps),
+    maplist(step_to_json_obj, Steps, Objs),
+    atomic_list_concat(Objs, ',\n  ', Inner),
+    atomic_list_concat(['[\n  ', Inner, '\n]'], JSON).
+
+step_to_json_obj(proof_step(formal(Formal), explanation(Expl)), Obj) :-
+    term_to_atom(Formal, FormalAtom),
+    atomic_list_concat(['{"formal": "', FormalAtom, '", "explanation": "', Expl, '"}'], Obj).
+
+% convert_proof_to_html(+Theorem, -HTML)
+%
+% Render the proof steps for Theorem as an HTML ordered list atom.
+convert_proof_to_html(Theorem, HTML) :-
+    theorem_proof_steps(Theorem, Steps),
+    maplist(step_to_html_item, Steps, Items),
+    atomic_list_concat(Items, '\n', Inner),
+    atomic_list_concat(['<ol>\n', Inner, '\n</ol>'], HTML).
+
+step_to_html_item(proof_step(formal(Formal), explanation(Expl)), Item) :-
+    term_to_atom(Formal, FormalAtom),
+    atomic_list_concat(['  <li><strong>', FormalAtom, '</strong><br>', Expl, '</li>'], Item).

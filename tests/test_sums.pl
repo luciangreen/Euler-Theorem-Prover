@@ -20,6 +20,15 @@ test(theorem_sum_squares) :-
 test(theorem_sum_cubes) :-
     theorem(sum_cubes, equals(sum(i,1,n,i^3), (n*(n+1)/2)^2)).
 
+test(derive_sum_power_1) :-
+    derive_sum_power(1, n*(n+1)/2).
+
+test(derive_sum_power_2) :-
+    derive_sum_power(2, n*(n+1)*(2*n+1)/6).
+
+test(derive_sum_power_3) :-
+    derive_sum_power(3, (n*(n+1)/2)^2).
+
 :- end_tests(sums).
 
 :- begin_tests(euler_sums).

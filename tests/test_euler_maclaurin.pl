@@ -38,4 +38,22 @@ test(proof_step_lookup) :-
         explanation("The area under y=x from 0 to n is a triangle with area n squared over 2.")
     ).
 
+test(export_proof_json_sum_first_n) :-
+    export_proof_json(sum_first_n, JSON),
+    atom(JSON),
+    once(sub_atom(JSON, _, _, _, '[')).
+
+test(export_proof_json_contains_explanation) :-
+    export_proof_json(sum_cubes, JSON),
+    once(sub_atom(JSON, _, _, _, 'explanation')).
+
+test(convert_proof_to_html_sum_first_n) :-
+    convert_proof_to_html(sum_first_n, HTML),
+    atom(HTML),
+    once(sub_atom(HTML, _, _, _, '<ol>')).
+
+test(convert_proof_to_html_contains_li) :-
+    convert_proof_to_html(sum_squares, HTML),
+    once(sub_atom(HTML, _, _, _, '<li>')).
+
 :- end_tests(euler_maclaurin).
