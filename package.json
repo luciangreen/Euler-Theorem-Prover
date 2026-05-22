@@ -1,0 +1,25 @@
+{
+  "name": "euler-theorem-prover",
+  "version": "1.0.0",
+  "description": "Euler Web Theorem Prover is a Prolog-powered symbolic proof system that explains how Euler\u2013Maclaurin reasoning connects sums, integrals, endpoint corrections, Bernoulli numbers, and closed-form formulas for powers. It is designed to be readable by children, students, and GitHub agents.",
+  "main": "app.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "swipl -q -s tests/run_tests.pl",
+    "web": "python -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luciangreen/Euler-Theorem-Prover.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/luciangreen/Euler-Theorem-Prover/issues"
+  },
+  "homepage": "https://github.com/luciangreen/Euler-Theorem-Prover#readme"
+}
