@@ -74,9 +74,29 @@ const proofOutput   = document.getElementById('proof-output');
 const simplifyOutput = document.getElementById('simplify-output');
 const explanationOutput = document.getElementById('explanation-output');
 
+function normalizeTheoremInput(input) {
+  const text = (input || '').trim().toLowerCase();
+  if (!text) return 'sum_first_n';
+
+  const aliases = {
+    sum_first_n: 'sum_first_n',
+    'sum i from 1 to n': 'sum_first_n',
+    'sum of first n integers': 'sum_first_n',
+    sum_squares: 'sum_squares',
+    'sum i^2 from 1 to n': 'sum_squares',
+    'sum of squares': 'sum_squares',
+    sum_cubes: 'sum_cubes',
+    'sum i^3 from 1 to n': 'sum_cubes',
+    'sum of cubes': 'sum_cubes'
+  };
+
+  if (aliases[text]) return aliases[text];
+  return text.replace(/\s+/g, '_');
+}
+
 if (proveButton && theoremInput && proofOutput && simplifyOutput && explanationOutput) {
   proveButton.addEventListener('click', () => {
-    const key = (theoremInput.value.trim() || 'sum_first_n').toLowerCase().replace(/\s+/g, '_');
+    const key = normalizeTheoremInput(theoremInput.value);
 
     if (proofSteps[key]) {
       const steps = proofSteps[key];
@@ -86,7 +106,7 @@ if (proveButton && theoremInput && proofOutput && simplifyOutput && explanationO
       explanationOutput.textContent = explanations[key].join('\n');
     } else {
       proofOutput.textContent =
-        `Unknown theorem \u201c${key}\u201d.\nTry: sum_first_n, sum_squares, or sum_cubes.`;
+        `Unknown theorem \u201c${key}\u201d.\nTry: "sum i from 1 to n", sum_first_n, sum_squares, or sum_cubes.`;
       simplifyOutput.textContent = '';
       explanationOutput.textContent = '';
     }
