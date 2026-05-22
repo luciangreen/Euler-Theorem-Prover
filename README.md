@@ -20,6 +20,19 @@ Stage 1 includes:
 - Child explanation and diagram descriptors
 - Basic browser demo (`index.html`, `app.js`)
 
+## Stage 2 implementation
+
+Stage 2 adds:
+- `prove_algorithm/3` for extracting closed form and proof steps directly
+- Algorithm method variants:
+  - integration approximation
+  - known formula expansion
+  - Euler-Maclaurin
+  - split polynomial terms
+  - compare methods
+- Extended polynomial support in Euler summation up to degree 5 terms
+- Stage 2 web demo behavior with method-aware output text
+
 ## Run tests
 
 ```bash
