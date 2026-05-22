@@ -40,6 +40,12 @@ Stage 3 adds:
 - Method-specific proof-step tails for algorithm modes, including compare-methods steps
 - Stage 3 tests for web-text parsing, compare-method algorithm flow, and `web_output/2` projection
 
+## Stage 4 implementation
+
+Stage 4 adds:
+- Richer web output projection via `web_output/3`, including `input`, method label text, and string-ready proof/diagram fields
+- Additional Stage 4 tests for fourth-power sums and richer web-output projection
+
 ## Run tests
 
 ```bash

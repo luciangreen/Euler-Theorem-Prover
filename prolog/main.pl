@@ -13,6 +13,7 @@
     verify_formula/2,
     child_explanation/2,
     web_output/2,
+    web_output/3,
     result_closed_form/2
 ]).
 
@@ -40,11 +41,32 @@ prove_algorithm(AlgorithmName, ClosedForm, ProofSteps) :-
 
 result_closed_form(theorem(_, closed_form(ClosedForm), _, _, _), ClosedForm).
 
-web_output(theorem(method(Method), closed_form(ClosedForm), proof_steps(Steps), child_explanation(Explanation), web_visualisation(Diagrams)),
+web_output(Result, Output) :-
+    web_output('', Result, Output).
+
+web_output(Input,
+           theorem(method(Method), closed_form(ClosedForm), proof_steps(Steps), child_explanation(Explanation), web_visualisation(Diagrams)),
            web_result{
+               input: Input,
                method: Method,
+               methodText: MethodText,
                closedForm: ClosedForm,
+               closedFormText: ClosedFormText,
                proofSteps: Steps,
+               proofStepText: StepText,
                childExplanation: Explanation,
-               diagrams: Diagrams
-           }).
+               diagrams: Diagrams,
+               diagramText: DiagramText
+           }) :-
+    method_text(Method, MethodText),
+    term_string(ClosedForm, ClosedFormText),
+    maplist(term_string, Steps, StepText),
+    maplist(term_string, Diagrams, DiagramText).
+
+method_text(euler_maclaurin, 'Euler-Maclaurin integration') :- !.
+method_text(integration_approximation, 'Integration approximation') :- !.
+method_text(known_formula_expansion, 'Known formula expansion') :- !.
+method_text(split_polynomial_terms, 'Split polynomial terms') :- !.
+method_text(compare_methods, 'Compare methods') :- !.
+method_text(Method, MethodText) :-
+    term_string(Method, MethodText).

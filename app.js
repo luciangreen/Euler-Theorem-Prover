@@ -58,18 +58,18 @@ document.getElementById("prove").addEventListener("click", () => {
       "A smooth curve gives the main area.",
       "Euler corrections fix the edge pieces."
     ],
-    diagram: ["staircase_sum", "smooth_integral_curve", "endpoint_correction", "split_polynomial_terms"]
+    diagrams: ["staircase_sum", "smooth_integral_curve", "endpoint_correction", "split_polynomial_terms"]
   } : {
     input,
     method: methodLabels[method] ?? method,
     closedForm: "Input not in built-in stage 2 examples.",
     proofSteps: ["Try one of the documented example inputs."],
     childExplanation: ["This browser demo uses built-in examples."],
-    diagram: ["staircase_sum"]
+    diagrams: ["staircase_sum"]
   };
 
   document.getElementById("closed").textContent = result.closedForm;
   document.getElementById("steps").textContent = stringifyLines(result.proofSteps);
   document.getElementById("child").textContent = stringifyLines(result.childExplanation);
-  document.getElementById("diagram").textContent = stringifyLines(result.diagram);
+  document.getElementById("diagram").textContent = stringifyLines(result.diagrams);
 });
