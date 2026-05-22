@@ -1,0 +1,404 @@
+Replacement Program Requirements: Euler Theorem Prover in Prolog for Children and Web
+
+Project Aim
+
+Create a child-understandable Prolog theorem prover that replaces the Gaussian Theorem Prover style with an Euler/integration-based theorem prover.
+
+It should accept algorithmic or summation-style inputs such as:
+
+sum(i, 1, n, i^2).
+sum(i, 1, n, (i+2)^2).
+sum(i, 1, n, i^3 + 0.5).
+algorithm(sum_squares_shifted).
+
+and produce:
+
+closed_form(...)
+proof_steps(...)
+child_explanation(...)
+web_visualisation(...)
+
+⸻
+
+1. Core Difference from Gaussian Theorem Prover
+
+The Gaussian Theorem Prover discovers formulas by fitting patterns, matrices, recurrence tables, or Gaussian elimination.
+
+The Euler Theorem Prover should instead discover formulas by:
+
+sum → staircase
+staircase → integral
+integral → area
+area + endpoint corrections → closed form
+closed form → simplified theorem
+
+So the main reasoning pipeline is:
+
+parse_spec(Input, Spec).
+detect_function(Spec, F).
+integrate_function(F, Integral).
+apply_euler_correction(F, Correction).
+simplify(Integral + Correction, ClosedForm).
+verify_by_testing(Spec, ClosedForm).
+explain_to_child(Spec, ClosedForm, Explanation).
+
+⸻
+
+2. Required Repository Structure
+
+euler-theorem-prover/
+  README.md
+  index.html
+  app.js
+  package.json
+  prolog/
+    main.pl
+    parser.pl
+    euler_pipeline.pl
+    integration.pl
+    euler_maclaurin.pl
+    polynomial.pl
+    simplify.pl
+    verify.pl
+    explain_child.pl
+    examples.pl
+  tests/
+    test_linear.pl
+    test_squares.pl
+    test_cubes.pl
+    test_shifted_polynomials.pl
+    test_decimal_terms.pl
+
+⸻
+
+3. Main Prolog Predicates
+
+The system must implement:
+
+prove(Input, Result).
+prove_sum(SumExpression, ClosedForm, ProofSteps).
+prove_algorithm(AlgorithmName, ClosedForm, ProofSteps).
+integrate(Expression, Variable, Result).
+differentiate(Expression, Variable, Result).
+euler_sum(Expression, Variable, Start, End, ClosedForm).
+euler_maclaurin(Expression, Variable, Start, End, Result).
+simplify(Expression, Simplified).
+expand(Expression, Expanded).
+factor(Expression, Factored).
+verify_formula(SumSpec, ClosedForm).
+child_explanation(ProofSteps, Explanation).
+web_output(Result, JsonLikeOutput).
+
+⸻
+
+4. Accepted Input Forms
+
+The prover should accept mathematical Prolog terms:
+
+sum(i, 1, n, i).
+sum(i, 1, n, i^2).
+sum(i, 1, n, i^3).
+sum(i, 1, n, (i+2)^2).
+sum(i, 1, n, i^3 + 0.5).
+sum(i, 1, n, 3*i^2 + 2*i + 1).
+
+It should also accept algorithm names:
+
+algorithm(sum_first_n).
+algorithm(sum_squares).
+algorithm(sum_cubes).
+algorithm(shifted_square_sum).
+algorithm(cube_plus_half_sum).
+
+and simple web text input:
+
+sum i from 1 to n of i^2
+sum i from 1 to n of (i+2)^2
+sum i from 1 to n of i^3 + 0.5
+
+⸻
+
+5. Required Example Outputs
+
+Example 1
+
+Input:
+
+sum(i, 1, n, i^2).
+
+Output:
+
+closed_form(n*(n+1)*(2*n+1)/6).
+proof_steps([
+  detect_polynomial(i^2),
+  integrate(i^2, i, i^3/3),
+  apply_euler_maclaurin_corrections,
+  simplify_to(n*(n+1)*(2*n+1)/6)
+]).
+child_explanation([
+  "We are adding square numbers.",
+  "Euler's idea is to compare the sum with the area under a curve.",
+  "The curve is y = x squared.",
+  "The integral gives the main area.",
+  "The correction terms repair the staircase edges.",
+  "The final formula is n(n+1)(2n+1)/6."
+]).
+
+⸻
+
+Example 2
+
+Input:
+
+sum(i, 1, n, (i+2)^2).
+
+Expected expanded form:
+
+(i+2)^2 = i^2 + 4*i + 4
+
+Output should use known sums:
+
+sum(i^2) + 4*sum(i) + 4*sum(1)
+
+Closed form:
+
+n*(n+1)*(2*n+1)/6 + 2*n*(n+1) + 4*n
+
+Then simplified if possible.
+
+Child explanation:
+
+First we open the bracket.
+Then we add the square part, the line part, and the constant part.
+Euler's method lets each part become a formula.
+
+⸻
+
+Example 3
+
+Input:
+
+sum(i, 1, n, i^3 + 0.5).
+
+Output:
+
+closed_form((n*(n+1)/2)^2 + n/2).
+
+Explanation:
+
+We split the problem into two easier sums.
+The cube part becomes the square of the triangular number.
+The 0.5 part is added n times, so it becomes n/2.
+
+⸻
+
+6. Integration-Based Algorithm Pipeline
+
+The required theorem-proving pipeline is:
+
+euler_pipeline(Input, Output) :-
+    parse_input(Input, SumSpec),
+    normalise_sum(SumSpec, Normalised),
+    expand_polynomial_sum(Normalised, Expanded),
+    split_sum_terms(Expanded, Terms),
+    prove_each_term_by_euler(Terms, TermProofs),
+    combine_term_proofs(TermProofs, Combined),
+    simplify(Combined, ClosedForm),
+    verify_formula(SumSpec, ClosedForm),
+    child_explanation(TermProofs, Explanation),
+    package_output(ClosedForm, TermProofs, Explanation, Output).
+
+⸻
+
+7. Integration Rules
+
+The system must include simple symbolic integration rules:
+
+integrate(X, X, X^2/2).
+integrate(X^2, X, X^3/3).
+integrate(X^3, X, X^4/4).
+integrate(C, X, C*X) :- number(C).
+integrate(A+B, X, IA+IB).
+integrate(A-B, X, IA-IB).
+integrate(C*A, X, C*IA) :- number(C).
+integrate(X^K, X, X^(K+1)/(K+1)).
+
+⸻
+
+8. Euler–Maclaurin Requirements
+
+Implement a simplified Euler–Maclaurin system for polynomials:
+
+euler_maclaurin(F, X, 1, N, ClosedForm).
+
+The system should support correction terms sufficiently to exactly prove polynomial sums up to at least degree 5.
+
+Required supported examples:
+
+sum(i,1,n,i).
+sum(i,1,n,i^2).
+sum(i,1,n,i^3).
+sum(i,1,n,i^4).
+sum(i,1,n,(i+2)^2).
+sum(i,1,n,i^3 + 0.5).
+sum(i,1,n,3*i^2 + 2*i + 1).
+
+⸻
+
+9. Alternative Algorithm Mode
+
+The prover should accept different algorithms that produce the same formula.
+
+For example:
+
+algorithm(sum_squares_by_integration).
+algorithm(sum_squares_by_known_formula).
+algorithm(sum_squares_by_euler_maclaurin).
+algorithm(sum_squares_by_split_terms).
+
+Each algorithm should return:
+
+result(ClosedForm).
+method(MethodName).
+proof_steps(Steps).
+child_explanation(Explanation).
+
+Example:
+
+?- prove_algorithm(sum_squares_by_integration, Result).
+
+Expected:
+
+Result = theorem(
+  method(euler_maclaurin),
+  closed_form(n*(n+1)*(2*n+1)/6),
+  explanation([...])
+).
+
+⸻
+
+10. Web Output Format
+
+The web app should receive JSON-like output:
+
+{
+  "input": "sum i from 1 to n of (i+2)^2",
+  "method": "Euler-Maclaurin integration",
+  "closedForm": "n(n+1)(2n+1)/6 + 2n(n+1) + 4n",
+  "proofSteps": [
+    "Expand (i+2)^2 into i^2 + 4i + 4.",
+    "Use Euler-style summation for i^2.",
+    "Use the triangular number formula for i.",
+    "Use n for the constant sum of 1.",
+    "Combine the formulas."
+  ],
+  "childExplanation": [
+    "The sum is like a staircase.",
+    "The integral is like the smooth area under the staircase.",
+    "Euler's correction fixes the missing edge pieces."
+  ]
+}
+
+⸻
+
+11. Web Interface Requirements
+
+The web page must include:
+
+[Input theorem box]
+[Choose method dropdown]
+  - Euler-Maclaurin
+  - Integration approximation
+  - Known formula expansion
+  - Split polynomial terms
+  - Compare methods
+[Prove button]
+[Closed form output]
+[Formal proof steps]
+[Child explanation]
+[Optional staircase diagram]
+
+⸻
+
+12. Child-Friendly Visualisation Requirements
+
+The system should generate descriptions for diagrams:
+
+diagram(staircase_sum).
+diagram(smooth_integral_curve).
+diagram(endpoint_correction).
+diagram(split_polynomial_terms).
+
+Example visual output:
+
+Draw bars for 1², 2², 3², ..., n².
+Draw a smooth curve y = x² over the bars.
+Show that the integral gives the main area.
+Show that Euler corrections fix the difference between bars and curve.
+
+⸻
+
+13. Required Tests
+
+test(sum_first_n) :-
+    prove(sum(i,1,n,i), Result),
+    result_closed_form(Result, n*(n+1)/2).
+test(sum_squares) :-
+    prove(sum(i,1,n,i^2), Result),
+    result_closed_form(Result, n*(n+1)*(2*n+1)/6).
+test(sum_cubes) :-
+    prove(sum(i,1,n,i^3), Result),
+    result_closed_form(Result, (n*(n+1)/2)^2).
+test(shifted_square) :-
+    prove(sum(i,1,n,(i+2)^2), Result),
+    result_closed_form(Result,
+      n*(n+1)*(2*n+1)/6 + 2*n*(n+1) + 4*n).
+test(cube_plus_half) :-
+    prove(sum(i,1,n,i^3 + 0.5), Result),
+    result_closed_form(Result, (n*(n+1)/2)^2 + n/2).
+
+⸻
+
+14. README Description
+
+Euler Theorem Prover is a child-friendly Prolog and web theorem prover that derives closed forms for sums by using Euler-style integration, Euler-Maclaurin correction terms, polynomial expansion, and symbolic simplification.
+Unlike the Gaussian Theorem Prover, which discovers formulas through pattern tables and Gaussian elimination, this system explains sums as areas, curves, staircases, endpoint corrections, and symbolic integration.
+
+⸻
+
+15. GitHub Agent Prompt
+
+Create a replacement project called Euler Theorem Prover.
+It must be written primarily in SWI-Prolog with a simple HTML/JavaScript web interface.
+The system should accept summation and algorithm inputs similar to Gaussian Theorem Prover, but use Euler-style integration techniques instead of Gaussian elimination.
+It must support:
+- sum(i,1,n,i)
+- sum(i,1,n,i^2)
+- sum(i,1,n,i^3)
+- sum(i,1,n,(i+2)^2)
+- sum(i,1,n,i^3 + 0.5)
+- sum(i,1,n,3*i^2 + 2*i + 1)
+It must produce:
+- a closed-form formula
+- formal Prolog proof steps
+- child-friendly explanations
+- web-ready JSON output
+- optional visual diagram descriptions
+Implement modules for:
+- parsing
+- polynomial expansion
+- integration
+- Euler-Maclaurin correction
+- known sum formulas
+- simplification
+- verification
+- child explanation
+- web output
+The program should include tests proving the required examples.
+The main predicate should be:
+prove(Input, Result).
+Example:
+prove(sum(i,1,n,(i+2)^2), Result).
+Expected Result:
+closed_form(n*(n+1)*(2*n+1)/6 + 2*n*(n+1) + 4*n).
+The code should be clear, readable, and suitable for children learning how sums connect to integrals.
