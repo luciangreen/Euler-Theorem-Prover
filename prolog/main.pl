@@ -2,6 +2,7 @@
     prove/2,
     prove_sum/3,
     prove_algorithm/2,
+    prove_algorithm/3,
     integrate/3,
     differentiate/3,
     euler_sum/5,
@@ -31,8 +32,11 @@ prove_sum(SumExpression, ClosedForm, ProofSteps) :-
     prove(SumExpression, theorem(_, closed_form(ClosedForm), proof_steps(ProofSteps), _, _)).
 
 prove_algorithm(AlgorithmName, Result) :-
-    algorithm_input(AlgorithmName, Sum),
-    prove(Sum, Result).
+    algorithm_input(AlgorithmName, _),
+    prove(algorithm(AlgorithmName), Result).
+
+prove_algorithm(AlgorithmName, ClosedForm, ProofSteps) :-
+    prove_algorithm(AlgorithmName, theorem(_, closed_form(ClosedForm), proof_steps(ProofSteps), _, _)).
 
 result_closed_form(theorem(_, closed_form(ClosedForm), _, _, _), ClosedForm).
 

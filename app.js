@@ -1,30 +1,43 @@
-const examples = {
-  "sum i from 1 to n of i": {
-    closedForm: "n*(n+1)/2",
-    proofSteps: ["Use Euler-Maclaurin on i.", "Simplify to triangular number formula."],
-    childExplanation: ["We stack bars from 1 to n.", "The smooth area gives n(n+1)/2."],
-    diagram: ["staircase_sum", "smooth_integral_curve", "endpoint_correction"]
-  },
-  "sum i from 1 to n of i^2": {
-    closedForm: "n*(n+1)*(2*n+1)/6",
-    proofSteps: ["Use Euler-Maclaurin on i^2.", "Apply endpoint corrections."],
-    childExplanation: ["Square bars make a staircase.", "Euler corrections match the exact sum."],
-    diagram: ["staircase_sum", "smooth_integral_curve", "endpoint_correction"]
-  },
-  "sum i from 1 to n of (i+2)^2": {
-    closedForm: "n*(n+1)*(2*n+1)/6 + 2*n*(n+1) + 4*n",
-    proofSteps: [
-      "Expand (i+2)^2 into i^2 + 4*i + 4.",
-      "Use known Euler formulas for each part.",
-      "Combine the formulas."
-    ],
-    childExplanation: [
-      "First open the bracket.",
-      "Then solve each easier piece.",
-      "Add the pieces for the final answer."
-    ],
-    diagram: ["split_polynomial_terms", "staircase_sum"]
-  }
+const inputForms = {
+  "sum i from 1 to n of i": "n*(n+1)/2",
+  "sum i from 1 to n of i^2": "n*(n+1)*(2*n+1)/6",
+  "sum i from 1 to n of i^3": "(n*(n+1)/2)^2",
+  "sum i from 1 to n of (i+2)^2": "n*(n+1)*(2*n+1)/6 + 2*n*(n+1) + 4*n",
+  "sum i from 1 to n of i^3 + 0.5": "(n*(n+1)/2)^2 + n/2",
+  "sum i from 1 to n of 3*i^2 + 2*i + 1": "3*(n*(n+1)*(2*n+1)/6) + n*(n+1) + n"
+};
+
+const methodLabels = {
+  "Euler-Maclaurin": "Euler-Maclaurin integration",
+  "Integration approximation": "Integration approximation",
+  "Known formula expansion": "Known formula expansion",
+  "Split polynomial terms": "Split polynomial terms",
+  "Compare methods": "Compare methods"
+};
+
+const methodSteps = {
+  "Euler-Maclaurin": [
+    "Model the sum as a staircase and smooth curve.",
+    "Use Euler-style endpoint correction terms.",
+    "Simplify to a closed form."
+  ],
+  "Integration approximation": [
+    "Estimate the staircase with an integral area.",
+    "Use endpoint balancing to match the exact sum."
+  ],
+  "Known formula expansion": [
+    "Expand the expression into standard polynomial pieces.",
+    "Apply known formulas to each piece.",
+    "Combine the results."
+  ],
+  "Split polynomial terms": [
+    "Split the polynomial into easier sums.",
+    "Solve each sum and combine the formulas."
+  ],
+  "Compare methods": [
+    "Run multiple proving styles on the same sum.",
+    "Confirm they produce the same closed form."
+  ]
 };
 
 function stringifyLines(lines) {
@@ -33,10 +46,25 @@ function stringifyLines(lines) {
 
 document.getElementById("prove").addEventListener("click", () => {
   const input = document.getElementById("input").value.trim();
-  const result = examples[input] ?? {
-    closedForm: "Not available in stage 1 web demo.",
-    proofSteps: ["Try one of the included example inputs."],
-    childExplanation: ["Stage 1 web UI currently serves curated examples."],
+  const method = document.getElementById("method").value;
+  const closedForm = inputForms[input];
+  const result = closedForm ? {
+    input,
+    method: methodLabels[method] ?? method,
+    closedForm,
+    proofSteps: methodSteps[method] ?? methodSteps["Euler-Maclaurin"],
+    childExplanation: [
+      "The sum looks like staircase bars.",
+      "A smooth curve gives the main area.",
+      "Euler corrections fix the edge pieces."
+    ],
+    diagram: ["staircase_sum", "smooth_integral_curve", "endpoint_correction", "split_polynomial_terms"]
+  } : {
+    input,
+    method: methodLabels[method] ?? method,
+    closedForm: "Input not in built-in stage 2 examples.",
+    proofSteps: ["Try one of the documented example inputs."],
+    childExplanation: ["This browser demo uses built-in examples."],
     diagram: ["staircase_sum"]
   };
 

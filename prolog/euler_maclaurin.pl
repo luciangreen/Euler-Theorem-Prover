@@ -21,6 +21,7 @@ prove_term(Var, Var, N, N*(N+1)/2) :- !.
 prove_term(Var^2, Var, N, N*(N+1)*(2*N+1)/6) :- !.
 prove_term(Var^3, Var, N, (N*(N+1)/2)^2) :- !.
 prove_term(Var^4, Var, N, N*(N+1)*(2*N+1)*(3*N^2+3*N-1)/30) :- !.
+prove_term(Var^5, Var, N, N^2*(N+1)^2*(2*N^2+2*N-1)/12) :- !.
 prove_term(C, _, N, N/2) :- number(C), C =:= 0.5, !.
 prove_term(C, _, N, C*N) :- number(C), !.
 prove_term(C*Var, Var, N, Closed) :- number(C), !,
@@ -43,6 +44,11 @@ prove_term(C*Var^4, Var, N, Closed) :- number(C), !,
 prove_term(C1*Var^4*C2, Var, N, Closed) :- number(C1), number(C2), !,
     C is C1*C2,
     scale_formula(C, N*(N+1)*(2*N+1)*(3*N^2+3*N-1)/30, Closed).
+prove_term(C*Var^5, Var, N, Closed) :- number(C), !,
+    scale_formula(C, N^2*(N+1)^2*(2*N^2+2*N-1)/12, Closed).
+prove_term(C1*Var^5*C2, Var, N, Closed) :- number(C1), number(C2), !,
+    C is C1*C2,
+    scale_formula(C, N^2*(N+1)^2*(2*N^2+2*N-1)/12, Closed).
 prove_term(-1*Inner, Var, N, Closed) :- !,
     prove_term(Inner, Var, N, InnerClosed),
     scale_formula(-1, InnerClosed, Closed).
