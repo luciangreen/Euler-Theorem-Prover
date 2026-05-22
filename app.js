@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// Euler Web Theorem Prover — stage 2 JavaScript knowledge base
+// Euler Web Theorem Prover — stage 7 JavaScript knowledge base
 //
 // This mirrors the Prolog modules (euler_maclaurin.pl, sums.pl, explain.pl,
 // simplify.pl, bernoulli.pl) so the web interface can display proof steps,
@@ -66,6 +66,46 @@ const explanations = {
   ]
 };
 
+// --- staircase visual diagrams (show_staircase_diagram) ---------------------
+
+const staircaseDiagrams = {
+  sum_first_n: [
+    'sum  =  staircase area',
+    '          ___',
+    '        _|   |',
+    '      _|     |',
+    '    _|       |',
+    '   |_________|',
+    '',
+    'integral  =  triangle area',
+    '          /|',
+    '        /  |',
+    '      /    |',
+    '    /______|',
+    '',
+    'correction  =  missing half-step area',
+    '    ___',
+    '   | / |  <-- half of each endpoint step',
+    '   |/__|'
+  ].join('\n'),
+  sum_squares: [
+    'sum  =  stacked squares',
+    '    ___',
+    '   |___|',
+    '   |___|___',
+    '   |___|___|___',
+    '',
+    'Each column has height i\u00b2 at position i.'
+  ].join('\n'),
+  sum_cubes: [
+    'sum  =  (triangular number)\u00b2',
+    '',
+    '  1\u00b3 + 2\u00b3 + 3\u00b3 + \u2026 + n\u00b3  =  (1 + 2 + \u2026 + n)\u00b2',
+    '',
+    '  The cube sum equals the square of the triangular number.'
+  ].join('\n')
+};
+
 // --- DOM wiring -------------------------------------------------------------
 
 const theoremInput  = document.getElementById('theorem-input');
@@ -103,7 +143,8 @@ if (proveButton && theoremInput && proofOutput && simplifyOutput && explanationO
       proofOutput.textContent = steps.map((s, i) => `${i + 1}. ${s}`).join('\n');
       simplifyOutput.textContent =
         `Closed form:  ${closedForms[key]}\n\nSimplification: ${simplifyFacts[key]}`;
-      explanationOutput.textContent = explanations[key].join('\n');
+      const diagram = staircaseDiagrams[key] ? '\n\n' + staircaseDiagrams[key] : '';
+      explanationOutput.textContent = explanations[key].join('\n') + diagram;
     } else {
       proofOutput.textContent =
         `Unknown theorem \u201c${key}\u201d.\nTry: "sum i from 1 to n", sum_first_n, sum_squares, or sum_cubes.`;
