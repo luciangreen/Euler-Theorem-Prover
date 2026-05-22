@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Euler Web Theorem Prover</title>
+</head>
+<body>
+  <main>
+    <h1>Euler Web Theorem Prover</h1>
+    <p>Stage 1 scaffold for the web interface.</p>
+    <label for="theorem-input">Theorem</label>
+    <input id="theorem-input" name="theorem" type="text" placeholder="sum i from 1 to n">
+    <button id="prove-button" type="button">Prove</button>
+    <section aria-live="polite">
+      <h2>Proof trace</h2>
+      <pre id="proof-output">Stage 1 scaffold ready.</pre>
+    </section>
+    <section aria-live="polite">
+      <h2>Simplification</h2>
+      <pre id="simplify-output">Pending implementation.</pre>
+    </section>
+    <section aria-live="polite">
+      <h2>Child-friendly explanation</h2>
+      <pre id="explanation-output">Pending implementation.</pre>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
