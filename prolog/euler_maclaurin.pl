@@ -21,14 +21,27 @@ prove_term(Var, Var, N, N*(N+1)/2) :- !.
 prove_term(Var^2, Var, N, N*(N+1)*(2*N+1)/6) :- !.
 prove_term(Var^3, Var, N, (N*(N+1)/2)^2) :- !.
 prove_term(Var^4, Var, N, N*(N+1)*(2*N+1)*(3*N^2+3*N-1)/30) :- !.
+prove_term(C, _, N, N/2) :- number(C), C =:= 0.5, !.
 prove_term(C, _, N, C*N) :- number(C), !.
 prove_term(C*Var, Var, N, Closed) :- number(C), !,
     scale_formula(C, N*(N+1)/2, Closed).
+prove_term(C1*Var*C2, Var, N, Closed) :- number(C1), number(C2), !,
+    C is C1*C2,
+    scale_formula(C, N*(N+1)/2, Closed).
 prove_term(C*Var^2, Var, N, Closed) :- number(C), !,
+    scale_formula(C, N*(N+1)*(2*N+1)/6, Closed).
+prove_term(C1*Var^2*C2, Var, N, Closed) :- number(C1), number(C2), !,
+    C is C1*C2,
     scale_formula(C, N*(N+1)*(2*N+1)/6, Closed).
 prove_term(C*Var^3, Var, N, Closed) :- number(C), !,
     scale_formula(C, (N*(N+1)/2)^2, Closed).
+prove_term(C1*Var^3*C2, Var, N, Closed) :- number(C1), number(C2), !,
+    C is C1*C2,
+    scale_formula(C, (N*(N+1)/2)^2, Closed).
 prove_term(C*Var^4, Var, N, Closed) :- number(C), !,
+    scale_formula(C, N*(N+1)*(2*N+1)*(3*N^2+3*N-1)/30, Closed).
+prove_term(C1*Var^4*C2, Var, N, Closed) :- number(C1), number(C2), !,
+    C is C1*C2,
     scale_formula(C, N*(N+1)*(2*N+1)*(3*N^2+3*N-1)/30, Closed).
 prove_term(-1*Inner, Var, N, Closed) :- !,
     prove_term(Inner, Var, N, InnerClosed),
@@ -44,9 +57,10 @@ scale_formula(C, Formula, Scaled) :-
     ).
 
 combine_forms([], 0).
-combine_forms([F], F) :- !.
-combine_forms([F|Fs], F + Rest) :-
-    combine_forms(Fs, Rest).
+combine_forms([F|Fs], Combined) :-
+    foldl(add_form, Fs, F, Combined).
+
+add_form(Next, Acc, Acc+Next).
 
 simplify_closed(Expr, Simplified) :-
     simplify_once(Expr, Expr1),
@@ -79,6 +93,12 @@ simplify_mul(0, _, 0) :- !.
 simplify_mul(_, 0, 0) :- !.
 simplify_mul(1, X, X) :- !.
 simplify_mul(X, 1, X) :- !.
+simplify_mul(A*B, C, S) :- number(C), !,
+    simplify_mul(C, A*B, S).
+simplify_mul(C, A*B, S) :- number(C), number(A), !,
+    K is C*A,
+    simplify_mul(K, B, S).
+simplify_mul(C, A*B, (C*A)*B) :- number(C), !.
 simplify_mul(A, B, S) :- number(A), number(B), !, S is A * B.
 simplify_mul(A, B, A*B).
 

@@ -1,7 +1,7 @@
 :- module(parser, [parse_input/2]).
 
-parse_input(sum(Var, Start, End, Expr), sum(Var, Start, End, Expr)).
-parse_input(algorithm(Name), algorithm(Name)).
+parse_input(sum(Var, Start, End, Expr), sum(Var, Start, End, Expr)) :- !.
+parse_input(algorithm(Name), algorithm(Name)) :- !.
 parse_input(Input, Parsed) :-
     string(Input),
     normalize_space(string(Normalized), Input),

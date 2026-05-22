@@ -10,9 +10,11 @@ expand(Expression, Expanded) :-
     simplify_expr(Expanded0, Expanded).
 
 expand_expr((A+B)^2, Expanded) :-
-    expand_expr(A*A + 2*A*B + B*B, Expanded).
+    !,
+    expand_expr(A^2 + 2*A*B + B^2, Expanded).
 expand_expr((A-B)^2, Expanded) :-
-    expand_expr(A*A - 2*A*B + B*B, Expanded).
+    !,
+    expand_expr(A^2 - 2*A*B + B^2, Expanded).
 expand_expr(A+B, EA+EB) :-
     expand_expr(A, EA),
     expand_expr(B, EB).
@@ -46,6 +48,10 @@ simplify_expr(A/B, S) :-
     simplify_expr(A, SA),
     simplify_expr(B, SB),
     simplify_div(SA, SB, S).
+simplify_expr(A^B, S) :-
+    simplify_expr(A, SA),
+    simplify_expr(B, SB),
+    simplify_pow(SA, SB, S).
 simplify_expr(X, X).
 
 simplify_add(0, X, X) :- !.
@@ -64,6 +70,9 @@ simplify_div(0, _, 0) :- !.
 simplify_div(X, 1, X) :- !.
 simplify_div(A, B, S) :- number(A), number(B), B =\= 0, !, S is A / B.
 simplify_div(A, B, A/B).
+
+simplify_pow(A, B, S) :- number(A), number(B), !, S is A ** B.
+simplify_pow(A, B, A^B).
 
 split_sum_terms(Expression, Terms) :-
     split_terms(Expression, Terms0),

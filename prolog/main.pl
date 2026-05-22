@@ -25,7 +25,7 @@
 :- use_module(examples, [algorithm_input/2]).
 
 prove(Input, Result) :-
-    euler_pipeline(Input, Result).
+    once(euler_pipeline(Input, Result)).
 
 prove_sum(SumExpression, ClosedForm, ProofSteps) :-
     prove(SumExpression, theorem(_, closed_form(ClosedForm), proof_steps(ProofSteps), _, _)).
