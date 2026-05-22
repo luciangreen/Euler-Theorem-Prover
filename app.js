@@ -2,8 +2,9 @@
 // Euler Web Theorem Prover — stage 2 JavaScript knowledge base
 //
 // This mirrors the Prolog modules (euler_maclaurin.pl, sums.pl, explain.pl,
-// simplify.pl, bernoulli.pl) so the web interface can display proof steps,
-// closed forms, and child-friendly explanations without a Prolog backend.
+// simplify.pl, bernoulli.pl, stretch.pl) so the web interface can display
+// proof steps, closed forms, child-friendly explanations, and visual
+// staircase diagrams without a Prolog backend.
 // ---------------------------------------------------------------------------
 
 // --- euler_maclaurin: prove/2 -----------------------------------------------
@@ -66,6 +67,65 @@ const explanations = {
   ]
 };
 
+// --- stretch: visual staircase diagrams ------------------------------------
+
+const staircaseDiagrams = {
+  sum_first_n: [
+    'Staircase for sum i (i = 1..n):',
+    '',
+    '  n | [#]',
+    '... | [#][#]',
+    '  2 | [#][#][#]',
+    '  1 | [#][#][#][#]',
+    '    +--------------',
+    '       1  2  3  n',
+    '',
+    '  [#] = staircase block  ->  discrete sum (sum i)',
+    '   /  = triangle edge    ->  integral     \u222b\u2080\u207f x dx = n\u00b2/2',
+    '   _  = half-step strip  ->  correction   (f(n)+f(0))/2 = n/2',
+    '',
+    '  staircase  =  triangle  +  half-step',
+    '    \u03a3 i      =  n\u00b2/2    +  n/2   =  n(n+1)/2'
+  ],
+  sum_squares: [
+    'Staircase for sum i\u00b2 (i = 1..n):',
+    '',
+    '  n | [###]',
+    '... | [###][###]',
+    '  2 | [###][###][###]',
+    '  1 | [###][###][###][###]',
+    '    +--------------------',
+    '          1    2    3    n',
+    '',
+    '  [###] = i\u00b2 blocks stacked in column i',
+    '',
+    '  Euler\u2013Maclaurin breaks this into three pieces:',
+    '    integral \u222b\u2080\u207f x\u00b2 dx  =  n\u00b3/3',
+    '    endpoint correction =  n\u00b2/2',
+    '    Bernoulli correction =  n/6',
+    '',
+    '  \u03a3 i\u00b2  =  n\u00b3/3 + n\u00b2/2 + n/6  =  n(n+1)(2n+1)/6'
+  ],
+  sum_cubes: [
+    'Staircase for sum i\u00b3 (i = 1..n):',
+    '',
+    '  The sum of cubes equals the square of the triangular number.',
+    '',
+    '  Think of it as a square arrangement of the triangular staircase:',
+    '',
+    '    +-------+',
+    '    | T | T |     where T = 1+2+\u2026+n  =  n(n+1)/2',
+    '    +---+---+',
+    '    | T | T |',
+    '    +-------+',
+    '',
+    '  Side length = T = n(n+1)/2',
+    '  Total area  = T\u00b2 = (n(n+1)/2)\u00b2',
+    '',
+    '  \u03a3 i\u00b3  =  (n(n+1)/2)\u00b2'
+  ]
+};
+
 // --- DOM wiring -------------------------------------------------------------
 
 const theoremInput  = document.getElementById('theorem-input');
@@ -73,6 +133,7 @@ const proveButton   = document.getElementById('prove-button');
 const proofOutput   = document.getElementById('proof-output');
 const simplifyOutput = document.getElementById('simplify-output');
 const explanationOutput = document.getElementById('explanation-output');
+const visualOutput  = document.getElementById('visual-output');
 
 function normalizeTheoremInput(input) {
   const text = (input || '').trim().toLowerCase();
@@ -94,7 +155,7 @@ function normalizeTheoremInput(input) {
   return text.replace(/\s+/g, '_');
 }
 
-if (proveButton && theoremInput && proofOutput && simplifyOutput && explanationOutput) {
+if (proveButton && theoremInput && proofOutput && simplifyOutput && explanationOutput && visualOutput) {
   proveButton.addEventListener('click', () => {
     const key = normalizeTheoremInput(theoremInput.value);
 
@@ -104,11 +165,13 @@ if (proveButton && theoremInput && proofOutput && simplifyOutput && explanationO
       simplifyOutput.textContent =
         `Closed form:  ${closedForms[key]}\n\nSimplification: ${simplifyFacts[key]}`;
       explanationOutput.textContent = explanations[key].join('\n');
+      visualOutput.textContent = staircaseDiagrams[key].join('\n');
     } else {
       proofOutput.textContent =
         `Unknown theorem \u201c${key}\u201d.\nTry: "sum i from 1 to n", sum_first_n, sum_squares, or sum_cubes.`;
       simplifyOutput.textContent = '';
       explanationOutput.textContent = '';
+      visualOutput.textContent = '';
     }
   });
 }
