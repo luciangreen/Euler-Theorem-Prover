@@ -1,0 +1,284 @@
+Euler Web Theorem Prover — Prolog GitHub Agent Program Requirements
+
+Project Goal
+
+Build a Prolog-based web theorem prover that explains and verifies Euler-style summation theorems, especially:
+
+\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+
+and generalises toward:
+
+\sum_{i=1}^{n} i^2,\quad \sum_{i=1}^{n} i^3,\quad \sum_{i=1}^{n} i^k
+
+using Euler–Maclaurin reasoning, symbolic algebra, Bernoulli numbers, and child-understandable proof steps.
+
+⸻
+
+1. Core Requirements
+
+1.1 Prolog Theorem Prover Core
+
+Create a Prolog engine that represents formulas as terms:
+
+sum(i, 1, n, i).
+integral(x, 0, n, x).
+equals(sum(i,1,n,i), n*(n+1)/2).
+
+The prover must support:
+
+prove(Theorem, ProofSteps).
+explain(Theorem, NaturalLanguageSteps).
+verify_identity(Left, Right).
+simplify(Expression, Simplified).
+
+⸻
+
+2. Euler–Maclaurin Module
+
+Implement an euler_maclaurin.pl module.
+
+It should encode the simplified Euler–Maclaurin rule:
+
+euler_maclaurin(F, A, B, Approximation).
+
+For the linear case:
+
+f(x) = x
+
+the system should derive:
+
+sum(i, 1, n, i)
+= integral(x, 0, n, x) + (f(n) + f(0))/2
+= n^2/2 + n/2
+= n*(n+1)/2.
+
+Expected query:
+
+?- prove(sum_first_n, Steps).
+
+Expected output:
+
+[
+  "Use Euler-Maclaurin to connect the sum to an integral.",
+  "For f(x)=x, the integral from 0 to n is n^2/2.",
+  "The endpoint correction is (f(n)+f(0))/2 = n/2.",
+  "So the sum is n^2/2 + n/2.",
+  "Factor the result to get n(n+1)/2."
+]
+
+⸻
+
+3. Higher-Power Generalisation
+
+Add support for known closed forms:
+
+closed_form(sum(i,1,n,i), n*(n+1)/2).
+closed_form(sum(i,1,n,i^2),
+    n*(n+1)*(2*n+1)/6).
+closed_form(sum(i,1,n,i^3),
+    (n*(n+1)/2)^2).
+
+Example query:
+
+?- closed_form(sum(i,1,n,i^2), Formula).
+
+Expected output:
+
+Formula = n*(n+1)*(2*n+1)/6.
+
+⸻
+
+4. Bernoulli Number Module
+
+Create bernoulli.pl.
+
+Represent initial Bernoulli numbers:
+
+bernoulli(0, 1).
+bernoulli(1, -1/2).
+bernoulli(2, 1/6).
+bernoulli(4, -1/30).
+bernoulli(6, 1/42).
+
+Use these to support Faulhaber-style formulas for:
+
+sum_power(K, N, Formula).
+
+Example:
+
+?- sum_power(2, n, Formula).
+
+Expected:
+
+Formula = n*(n+1)*(2*n+1)/6.
+
+⸻
+
+5. Symbolic Algebra Requirements
+
+Implement basic simplification rules:
+
+simplify(X + 0, X).
+simplify(X * 1, X).
+simplify(X * 0, 0).
+simplify(N^1, N).
+simplify(N^0, 1).
+factor(n^2/2 + n/2, n*(n+1)/2).
+expand(n*(n+1)/2, (n^2+n)/2).
+
+The agent should create tests for:
+
+verify_identity(n^2/2 + n/2, n*(n+1)/2).
+verify_identity((n*(n+1)/2)^2, n^2*(n+1)^2/4).
+
+⸻
+
+6. Web Interface Requirements
+
+Create a simple web app:
+
+/index.html
+/app.js
+/prolog/euler_maclaurin.pl
+/prolog/sums.pl
+/prolog/bernoulli.pl
+
+The web interface should have:
+
+1. A theorem input box.
+2. A “Prove” button.
+3. A proof trace output area.
+4. A formula simplification view.
+5. A child-friendly explanation panel.
+
+Example input:
+
+sum i from 1 to n
+
+Expected output:
+
+The sum 1 + 2 + ... + n forms a triangle.
+Euler's method connects this staircase-like sum to the area under y = x.
+The area gives n²/2, and the endpoint correction gives n/2.
+Together this becomes n(n+1)/2.
+
+⸻
+
+7. GitHub Agent Tasks
+
+Task 1 — Create Repository Structure
+
+euler-web-theorem-prover/
+  README.md
+  index.html
+  app.js
+  prolog/
+    main.pl
+    euler_maclaurin.pl
+    sums.pl
+    bernoulli.pl
+    simplify.pl
+    explain.pl
+  tests/
+    test_sums.pl
+    test_simplify.pl
+    test_euler_maclaurin.pl
+
+⸻
+
+Task 2 — Implement Core Proof Predicates
+
+Required predicates:
+
+prove/2.
+closed_form/2.
+sum_power/3.
+simplify/2.
+factor/2.
+expand/2.
+verify_identity/2.
+explain/2.
+
+⸻
+
+Task 3 — Add Main Theorems
+
+The system must prove:
+
+theorem(sum_first_n,
+    equals(sum(i,1,n,i), n*(n+1)/2)).
+theorem(sum_squares,
+    equals(sum(i,1,n,i^2), n*(n+1)*(2*n+1)/6)).
+theorem(sum_cubes,
+    equals(sum(i,1,n,i^3), (n*(n+1)/2)^2)).
+
+⸻
+
+Task 4 — Add Child-Friendly Proof Traces
+
+Each theorem should produce:
+
+proof_step(formal(...), explanation("...")).
+
+Example:
+
+proof_step(
+  equals(integral(x,0,n,x), n^2/2),
+  explanation("The area under y=x from 0 to n is a triangle with area n squared over 2.")
+).
+
+⸻
+
+Task 5 — Add Tests
+
+Example tests:
+
+:- begin_tests(euler_sums).
+test(sum_first_n) :-
+    closed_form(sum(i,1,n,i), n*(n+1)/2).
+test(sum_squares) :-
+    closed_form(sum(i,1,n,i^2), n*(n+1)*(2*n+1)/6).
+test(sum_cubes) :-
+    closed_form(sum(i,1,n,i^3), (n*(n+1)/2)^2).
+:- end_tests(euler_sums).
+
+⸻
+
+8. README Summary
+
+The README should say:
+
+Euler Web Theorem Prover is a Prolog-powered symbolic proof system that explains how Euler–Maclaurin reasoning connects sums, integrals, endpoint corrections, Bernoulli numbers, and closed-form formulas for powers. It is designed to be readable by children, students, and GitHub agents.
+
+⸻
+
+9. Stretch Goals
+
+Add:
+
+derive_sum_power(K, Formula).
+show_staircase_diagram(sum(i,1,n,i)).
+export_proof_json(Theorem, JSON).
+convert_proof_to_html(Theorem, HTML).
+
+Also add a visual explanation of:
+
+sum = staircase area
+integral = triangle area
+correction = missing half-step area
+
+⸻
+
+Suggested GitHub Agent Prompt
+
+Create a Prolog and web-based Euler Theorem Prover.
+Implement a symbolic Prolog theorem prover that proves the sum of the first n integers using Euler–Maclaurin reasoning, then generalises to sums of squares and cubes using Bernoulli/Faulhaber formulas.
+The system must include:
+- Prolog modules for Euler–Maclaurin, Bernoulli numbers, sums of powers, simplification, and explanations.
+- Predicates prove/2, closed_form/2, sum_power/3, simplify/2, verify_identity/2, and explain/2.
+- A simple HTML/JavaScript interface where users type a theorem and receive proof steps.
+- Child-friendly explanations alongside formal symbolic steps.
+- Tests for sum_first_n, sum_squares, and sum_cubes.
+- A README explaining the Euler–Maclaurin connection.
+Use SWI-Prolog-compatible code.
+Keep the system simple, readable, and extensible.
