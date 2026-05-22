@@ -1,6 +1,7 @@
 :- begin_tests(euler_maclaurin).
 
 :- use_module('../prolog/euler_maclaurin').
+:- use_module('../prolog/explain').
 
 test(euler_maclaurin_linear) :-
     euler_maclaurin(x, 0, n, n*(n+1)/2).
@@ -19,6 +20,22 @@ test(prove_sum_cubes) :-
 
 test(prove_first_step) :-
     prove(sum_first_n, [First|_]),
-    First = "Use Euler-Maclaurin to connect the sum to an integral.".
+    First = proof_step(
+        formal(equals(sum(i,1,n,i), integral(x,0,n,x) + (n+0)/2)),
+        explanation("Euler-Maclaurin turns the staircase sum into an area plus a small endpoint correction.")
+    ).
+
+test(prove_uses_structured_steps) :-
+    prove(sum_squares, Steps),
+    forall(
+        member(Step, Steps),
+        Step = proof_step(formal(_), explanation(_))
+    ).
+
+test(proof_step_lookup) :-
+    proof_step(
+        formal(equals(integral(x,0,n,x), n^2/2)),
+        explanation("The area under y=x from 0 to n is a triangle with area n squared over 2.")
+    ).
 
 :- end_tests(euler_maclaurin).
