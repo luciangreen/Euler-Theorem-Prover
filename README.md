@@ -33,6 +33,13 @@ Stage 2 adds:
 - Extended polynomial support in Euler summation up to degree 5 terms
 - Stage 2 web demo behavior with method-aware output text
 
+## Stage 3 implementation
+
+Stage 3 adds:
+- Flexible web-text parsing for `sum <var> from <start> to <end> of <expr>` inputs
+- Method-specific proof-step tails for algorithm modes, including compare-methods steps
+- Stage 3 tests for web-text parsing, compare-method algorithm flow, and `web_output/2` projection
+
 ## Run tests
 
 ```bash
