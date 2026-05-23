@@ -82,6 +82,13 @@ Stage 9 adds:
 - Validation that all Stage 9 algorithm variants produce the same square-sum closed form
 - Validation that `prove_algorithm/2` returns method, closed form, proof steps, and child explanation for algorithm mode
 
+## Stage 11 implementation
+
+Stage 11 adds:
+- Web-interface coverage tests for the required input box, method dropdown, prove button, and output sections
+- Validation that the required method options are present in the web dropdown
+- Validation that `app.js` wires prove-button actions into closed-form, proof-step, child-explanation, and diagram outputs
+
 ## Run tests
 
 ```bash
