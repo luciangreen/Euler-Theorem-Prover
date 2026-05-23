@@ -17,7 +17,8 @@ main :-
         'tests/test_stage9.pl',
         'tests/test_stage10.pl',
         'tests/test_stage11.pl',
-        'tests/test_stage12.pl'
+        'tests/test_stage12.pl',
+        'tests/test_stage13.pl'
     ],
     maplist(consult, Files),
     (   run_tests
