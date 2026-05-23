@@ -13,6 +13,7 @@
     verify_formula/2,
     child_explanation/2,
     web_output/2,
+    web_output/3,
     result_closed_form/2
 ]).
 
@@ -40,9 +41,13 @@ prove_algorithm(AlgorithmName, ClosedForm, ProofSteps) :-
 
 result_closed_form(theorem(_, closed_form(ClosedForm), _, _, _), ClosedForm).
 
-web_output(theorem(method(Method), closed_form(ClosedForm), proof_steps(Steps), child_explanation(Explanation), web_visualisation(Diagrams)),
+web_output(Theorem, WebResult) :-
+    web_output("", Theorem, WebResult).
+
+web_output(InputText,
+           theorem(method(Method), closed_form(ClosedForm), proof_steps(Steps), child_explanation(Explanation), web_visualisation(Diagrams)),
            web_result{
-               input: "",
+               input: InputText,
                method: MethodLabel,
                closedForm: ClosedFormText,
                proofSteps: StepTexts,
