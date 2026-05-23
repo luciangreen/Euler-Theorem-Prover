@@ -68,6 +68,13 @@ Stage 7 adds:
 - Stage 7 PL-Unit tests validating the required integration rules from `pr2.txt`
 - Stage 7 test wiring in both `npm test` and `tests/run_tests.pl`
 
+## Stage 8 implementation
+
+Stage 8 adds:
+- Simplified Euler-Maclaurin coverage checks for required polynomial sums through degree 5
+- Canonical closed-form simplification for subtraction terms in Euler polynomial formulas
+- Stage 8 tests validating all required examples from the Euler-Maclaurin requirements section
+
 ## Run tests
 
 ```bash

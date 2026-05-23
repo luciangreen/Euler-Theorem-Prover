@@ -92,8 +92,17 @@ simplify_once(X, X).
 
 simplify_add(0, X, X) :- !.
 simplify_add(X, 0, X) :- !.
+simplify_add(A, -1*B, S) :- !,
+    simplify_sub(A, B, S).
+simplify_add(A, B, S) :- number(B), B < 0, !,
+    PosB is -B,
+    simplify_sub(A, PosB, S).
 simplify_add(A, B, S) :- number(A), number(B), !, S is A + B.
 simplify_add(A, B, A+B).
+
+simplify_sub(A, 0, A) :- !.
+simplify_sub(A, B, S) :- number(A), number(B), !, S is A - B.
+simplify_sub(A, B, A-B).
 
 simplify_mul(0, _, 0) :- !.
 simplify_mul(_, 0, 0) :- !.
