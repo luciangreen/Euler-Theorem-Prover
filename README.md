@@ -61,6 +61,13 @@ Stage 6 adds:
 - Per-term Euler proving flow before combining and verifying the final closed form
 - Stage 6 tests validating split-term term proving and method-specific algorithm proof steps
 
+## Stage 7 implementation
+
+Stage 7 adds:
+- Explicit symbolic integration rule coverage in `integration.pl` for variable, powers, constants, sum/difference, and scalar multiples
+- Stage 7 PL-Unit tests validating the required integration rules from `pr2.txt`
+- Stage 7 test wiring in both `npm test` and `tests/run_tests.pl`
+
 ## Run tests
 
 ```bash

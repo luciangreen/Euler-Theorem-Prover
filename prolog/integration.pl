@@ -1,9 +1,9 @@
 :- module(integration, [integrate/3, differentiate/3]).
 
-integrate(X, X, X^2/2) :- atom(X), !.
-integrate(X^2, X, X^3/3) :- atom(X), !.
-integrate(X^3, X, X^4/4) :- atom(X), !.
-integrate(C, X, C*X) :- number(C), atom(X), !.
+integrate(X, X, X^2/2) :- !.
+integrate(X^2, X, X^3/3) :- !.
+integrate(X^3, X, X^4/4) :- !.
+integrate(C, X, C*X) :- number(C), !.
 integrate(A+B, X, IA+IB) :- integrate(A, X, IA), integrate(B, X, IB), !.
 integrate(A-B, X, IA-IB) :- integrate(A, X, IA), integrate(B, X, IB), !.
 integrate(C*A, X, C*IA) :- number(C), integrate(A, X, IA), !.
