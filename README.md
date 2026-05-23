@@ -89,6 +89,13 @@ Stage 11 adds:
 - Validation that the required method options are present in the web dropdown
 - Validation that `app.js` wires prove-button actions into closed-form, proof-step, child-explanation, and diagram outputs
 
+## Stage 12 implementation
+
+Stage 12 adds:
+- Child-friendly visualisation wording aligned with staircase, smooth-curve/integral area, and endpoint-correction descriptions
+- Stage 12 tests that validate required diagram descriptors and web output visual lines
+- Web demo diagram output strings updated from internal identifiers to human-readable diagram descriptions
+
 ## Run tests
 
 ```bash

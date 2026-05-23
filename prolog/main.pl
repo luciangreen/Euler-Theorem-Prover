@@ -96,6 +96,6 @@ diagram_text(diagram(Name), Text) :-
     atom_string(Name, Text).
 
 diagram_description(staircase_sum, "Draw bars for 1^2, 2^2, 3^2, ..., n^2.") :- !.
-diagram_description(smooth_integral_curve, "Draw a smooth curve y = x^2 over the bars.") :- !.
-diagram_description(endpoint_correction, "Show Euler endpoint corrections fixing the edge gap.") :- !.
+diagram_description(smooth_integral_curve, "Draw a smooth curve y = x^2 over the bars and show that the integral gives the main area.") :- !.
+diagram_description(endpoint_correction, "Show that Euler corrections fix the difference between bars and curve.") :- !.
 diagram_description(split_polynomial_terms, "Show split polynomial terms becoming separate easier sums.") :- !.
