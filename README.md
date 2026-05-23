@@ -54,6 +54,13 @@ Stage 5 adds:
 - Method-aware child explanation lines for compare-methods, known-formula, split-term, and integration-approximation flows
 - Stage 5 tests for descriptive diagram output and compare-method child explanation text
 
+## Stage 6 implementation
+
+Stage 6 adds:
+- Explicit integration-based pipeline steps in `euler_pipeline/2` (`prove_each_term_by_euler`, `combine_term_proofs`, and output packaging)
+- Per-term Euler proving flow before combining and verifying the final closed form
+- Stage 6 tests validating split-term term proving and method-specific algorithm proof steps
+
 ## Run tests
 
 ```bash
