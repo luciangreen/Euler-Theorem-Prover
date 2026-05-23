@@ -1,8 +1,7 @@
 # Euler-Theorem-Prover
 
-Euler Theorem Prover is a child-friendly SWI-Prolog and web theorem prover for finite sums.
-It models sums as staircases, uses integration-inspired reasoning, applies Euler-style corrections,
-and returns closed forms with proof steps and child explanations.
+Euler Theorem Prover is a child-friendly Prolog and web theorem prover that derives closed forms for sums by using Euler-style integration, Euler-Maclaurin correction terms, polynomial expansion, and symbolic simplification.
+Unlike the Gaussian Theorem Prover, which discovers formulas through pattern tables and Gaussian elimination, this system explains sums as areas, curves, staircases, endpoint corrections, and symbolic integration.
 
 ## Stage 1 implementation
 
@@ -95,6 +94,12 @@ Stage 12 adds:
 - Child-friendly visualisation wording aligned with staircase, smooth-curve/integral area, and endpoint-correction descriptions
 - Stage 12 tests that validate required diagram descriptors and web output visual lines
 - Web demo diagram output strings updated from internal identifiers to human-readable diagram descriptions
+
+## Stage 14 implementation
+
+Stage 14 adds:
+- README description text aligned with the required Stage 14 wording in `pr2.txt`
+- Stage 14 tests that verify both required README description sentences are present
 
 ## Run tests
 
