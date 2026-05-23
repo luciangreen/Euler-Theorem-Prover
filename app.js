@@ -58,14 +58,19 @@ document.getElementById("prove").addEventListener("click", () => {
       "A smooth curve gives the main area.",
       "Euler corrections fix the edge pieces."
     ],
-    diagrams: ["staircase_sum", "smooth_integral_curve", "endpoint_correction", "split_polynomial_terms"]
+    diagrams: [
+      "Draw bars for 1^2, 2^2, 3^2, ..., n^2.",
+      "Draw a smooth curve y = x^2 over the bars and show that the integral gives the main area.",
+      "Show that Euler corrections fix the difference between bars and curve.",
+      "Show split polynomial terms becoming separate easier sums."
+    ]
   } : {
     input,
     method: methodLabels[method] ?? method,
     closedForm: "Input not in built-in stage 2 examples.",
     proofSteps: ["Try one of the documented example inputs."],
     childExplanation: ["This browser demo uses built-in examples."],
-    diagrams: ["staircase_sum"]
+    diagrams: ["Draw bars for 1^2, 2^2, 3^2, ..., n^2."]
   };
 
   document.getElementById("closed").textContent = result.closedForm;
