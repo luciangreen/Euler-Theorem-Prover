@@ -9,7 +9,10 @@ main :-
         'tests/test_decimal_terms.pl',
         'tests/test_stage2.pl',
         'tests/test_stage3.pl',
-        'tests/test_stage4.pl'
+        'tests/test_stage4.pl',
+        'tests/test_stage5.pl',
+        'tests/test_stage6.pl',
+        'tests/test_stage7.pl'
     ],
     maplist(consult, Files),
     (   run_tests
