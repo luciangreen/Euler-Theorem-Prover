@@ -75,6 +75,13 @@ Stage 8 adds:
 - Canonical closed-form simplification for subtraction terms in Euler polynomial formulas
 - Stage 8 tests validating all required examples from the Euler-Maclaurin requirements section
 
+## Stage 9 implementation
+
+Stage 9 adds:
+- Explicit alternative-algorithm mode checks for integration, known-formula, Euler-Maclaurin, and split-terms square-sum strategies
+- Validation that all Stage 9 algorithm variants produce the same square-sum closed form
+- Validation that `prove_algorithm/2` returns method, closed form, proof steps, and child explanation for algorithm mode
+
 ## Run tests
 
 ```bash
