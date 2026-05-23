@@ -8,7 +8,8 @@ main :-
         'tests/test_shifted_polynomials.pl',
         'tests/test_decimal_terms.pl',
         'tests/test_stage2.pl',
-        'tests/test_stage3.pl'
+        'tests/test_stage3.pl',
+        'tests/test_stage4.pl'
     ],
     maplist(consult, Files),
     (   run_tests

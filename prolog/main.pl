@@ -42,9 +42,47 @@ result_closed_form(theorem(_, closed_form(ClosedForm), _, _, _), ClosedForm).
 
 web_output(theorem(method(Method), closed_form(ClosedForm), proof_steps(Steps), child_explanation(Explanation), web_visualisation(Diagrams)),
            web_result{
-               method: Method,
-               closedForm: ClosedForm,
-               proofSteps: Steps,
+               input: "",
+               method: MethodLabel,
+               closedForm: ClosedFormText,
+               proofSteps: StepTexts,
                childExplanation: Explanation,
-               diagrams: Diagrams
-           }).
+               diagrams: DiagramTexts
+           }) :-
+    method_label(Method, MethodLabel),
+    term_string(ClosedForm, ClosedFormText),
+    maplist(step_text, Steps, StepTexts),
+    maplist(diagram_text, Diagrams, DiagramTexts).
+
+method_label(euler_maclaurin, "Euler-Maclaurin integration").
+method_label(integration_approximation, "Integration approximation").
+method_label(known_formula_expansion, "Known formula expansion").
+method_label(split_polynomial_terms, "Split polynomial terms").
+method_label(compare_methods, "Compare methods").
+method_label(Method, MethodText) :-
+    atom(Method),
+    atom_string(Method, MethodText).
+
+step_text(split_terms, "Split the sum into separate polynomial terms.") :- !.
+step_text(expand_polynomial(Expr), Text) :-
+    !,
+    term_string(Expr, ExprText),
+    string_concat("Expand polynomial expression: ", ExprText, Text).
+step_text(detect_polynomial(Term), Text) :-
+    !,
+    term_string(Term, TermText),
+    string_concat("Detect polynomial term: ", TermText, Text).
+step_text(apply_euler_maclaurin_corrections, "Apply Euler-Maclaurin correction terms.") :- !.
+step_text(integrate_curve_area, "Integrate the smooth curve to estimate area.") :- !.
+step_text(apply_endpoint_balance, "Apply endpoint balancing corrections.") :- !.
+step_text(apply_known_sum_formulas, "Apply known formulas for each sum.") :- !.
+step_text(solve_each_split_term, "Solve each split polynomial term.") :- !.
+step_text(run_multiple_methods, "Run multiple proving methods.") :- !.
+step_text(compare_closed_forms, "Compare closed forms from each method.") :- !.
+step_text(combine_and_simplify, "Combine terms and simplify the closed form.") :- !.
+step_text(Step, Text) :-
+    term_string(Step, Text).
+
+diagram_text(diagram(Name), Text) :-
+    atom(Name),
+    atom_string(Name, Text).
