@@ -101,6 +101,13 @@ Stage 14 adds:
 - README description text aligned with the required Stage 14 wording in `pr2.txt`
 - Stage 14 tests that verify both required README description sentences are present
 
+## Stage 15 implementation
+
+Stage 15 adds:
+- Stage 15 tests for the GitHub-agent prompt requirements in `pr2.txt`
+- Validation of required supported sum inputs and algorithm-style proving input
+- Validation that theorem output includes closed form, proof steps, child explanation, web-ready output projection, and required module presence
+
 ## Run tests
 
 ```bash
