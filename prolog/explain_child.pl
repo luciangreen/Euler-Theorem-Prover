@@ -1,8 +1,9 @@
 :- module(explain_child, [child_explanation/2, diagram_descriptions/1]).
 
 child_explanation(ProofSteps, Explanation) :-
-    split_line(ProofSteps, SplitLine),
-    method_line(ProofSteps, MethodLine),
+    proof_markers(ProofSteps, Markers),
+    split_line(Markers, SplitLine),
+    method_line(Markers, MethodLine),
     Explanation = [
         "The bars in the sum make a staircase shape.",
         "A smooth curve gives an area close to the staircase.",
@@ -11,6 +12,28 @@ child_explanation(ProofSteps, Explanation) :-
         MethodLine,
         "Then we combine the pieces into one formula."
     ].
+
+proof_markers(term_proofs(Method, sum(_, _, _, Expr), Terms, TermProofs), Markers) :-
+    detect_markers(TermProofs, DetectMarkers),
+    (   Terms = [Expr]
+    ->  Prefix = [split_terms]
+    ;   Prefix = [expand_polynomial(Expr), split_terms]
+    ),
+    method_markers(Method, MethodMarkers),
+    append(Prefix, DetectMarkers, Steps0),
+    append(Steps0, MethodMarkers, Markers).
+proof_markers(ProofSteps, ProofSteps).
+
+detect_markers([], []).
+detect_markers([term_proof(Term, _)|Rest], [detect_polynomial(Term)|Markers]) :-
+    detect_markers(Rest, Markers).
+
+method_markers(euler_maclaurin, [apply_euler_maclaurin_corrections, combine_and_simplify]).
+method_markers(integration_approximation, [integrate_curve_area, apply_endpoint_balance, combine_and_simplify]).
+method_markers(known_formula_expansion, [apply_known_sum_formulas, combine_and_simplify]).
+method_markers(split_polynomial_terms, [solve_each_split_term, combine_and_simplify]).
+method_markers(compare_methods, [run_multiple_methods, compare_closed_forms, combine_and_simplify]).
+method_markers(_, [apply_euler_maclaurin_corrections, combine_and_simplify]).
 
 split_line(ProofSteps, "We split the sum into easier pieces.") :-
     member(split_terms, ProofSteps),
