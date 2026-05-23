@@ -47,6 +47,13 @@ Stage 4 adds:
 - Explicit `input` field in projected web output for stable web payload shape
 - Stage 4 tests for output-shape and method-label behavior
 
+## Stage 5 implementation
+
+Stage 5 adds:
+- Child-friendly diagram text projection in `web_output/2` for staircase, curve, endpoint correction, and split-term views
+- Method-aware child explanation lines for compare-methods, known-formula, split-term, and integration-approximation flows
+- Stage 5 tests for descriptive diagram output and compare-method child explanation text
+
 ## Run tests
 
 ```bash
