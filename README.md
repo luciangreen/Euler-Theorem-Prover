@@ -122,3 +122,17 @@ npm test
 ?- [prolog/main].
 ?- prove(sum(i,1,n,(i+2)^2), Result).
 ```
+
+## How the Euler-Maclaurin step is computed
+
+For each power term i^P, `prolog/em_derivation.pl` computes the three parts
+of the Euler-Maclaurin formula with exact fractions: the integral
+n^(P+1)/(P+1), half the end value n^P/2, and the Bernoulli corrections
+B(2k)/(2k)! times the (2k-1)th derivative at n. They appear in the proof
+steps as `euler_maclaurin_terms(...)`. For powers 1 to 5 the familiar
+factored formulas are still shown, and the tests check that they equal the
+computed parts; higher powers use the computed polynomial directly.
+
+Sums need not start at 1 or end at n: the sum from a to b is F(b) - F(a-1),
+where F is the sum from 1, so `sum(i, 0, n, i)`, `sum(i, 3, n, i)` and
+`sum(i, 1, 10, i)` (which gives 55) all work.
