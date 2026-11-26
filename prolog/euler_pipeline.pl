@@ -7,6 +7,7 @@
 :- use_module(verify, [verify_formula/2]).
 :- use_module(explain_child, [child_explanation/2, diagram_descriptions/1]).
 :- use_module(examples, [algorithm_input/2, algorithm_method/2]).
+:- use_module(em_derivation, [euler_maclaurin_derivation/3]).
 
 euler_pipeline(Input, Output) :-
     parse_input(Input, Parsed),
@@ -66,9 +67,30 @@ build_steps(Method, sum(_, _, _, Expr), Terms, TermProofs, Steps) :-
     ->  Prefix = [split_terms]
     ;   Prefix = [expand_polynomial(Expr), split_terms]
     ),
-    method_steps(Method, Tail),
+    method_steps(Method, Tail0),
+    derivation_steps(Method, TermProofs, Tail0, Tail),
     append(Prefix, Detect, Steps0),
     append(Steps0, Tail, Steps).
+
+% For the Euler-Maclaurin method, the computed parts of the formula for each
+% power term follow the corrections step: the integral, half the end value
+% and the Bernoulli corrections (see em_derivation.pl).
+derivation_steps(euler_maclaurin, TermProofs, Tail0, Tail) :- !,
+    findall(D, ( member(term_proof(Term, _), TermProofs),
+                 term_power(Term, P),
+                 euler_maclaurin_derivation(P, n, D) ), Ds),
+    (   Ds == []
+    ->  Tail = Tail0
+    ;   Tail0 = [apply_euler_maclaurin_corrections|Rest]
+    ->  Tail = [apply_euler_maclaurin_corrections, euler_maclaurin_terms(Ds)|Rest]
+    ;   Tail = Tail0
+    ).
+derivation_steps(_, _, Tail, Tail).
+
+term_power(_^P, P) :- integer(P), !.
+term_power(C*T, P) :- number(C), !, term_power(T, P).
+term_power(T*C, P) :- number(C), !, term_power(T, P).
+term_power(V, 1) :- atom(V).
 
 detect_steps([], []).
 detect_steps([term_proof(Term, _)|Rest], [detect_polynomial(Term)|Detect]) :-

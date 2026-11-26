@@ -1,16 +1,44 @@
 :- module(euler_maclaurin, [euler_sum/5, euler_maclaurin/5]).
 
 :- use_module(polynomial, [expand/2, split_sum_terms/2]).
+:- use_module(em_derivation, [power_sum_polynomial/3]).
 
 euler_maclaurin(Expr, Var, Start, End, ClosedForm) :-
     euler_sum(Expr, Var, Start, End, ClosedForm).
 
 euler_sum(Expr, Var, 1, N, ClosedForm) :-
+    atom(N), !,
     expand(Expr, Expanded),
     split_sum_terms(Expanded, Terms),
     prove_terms(Terms, Var, N, TermForms),
     combine_forms(TermForms, Closed0),
     simplify_closed(Closed0, ClosedForm).
+
+% Other limits: the sum from Start to End is F(End) - F(Start - 1), where F
+% is the closed form of the sum from 1. This holds for polynomial terms.
+euler_sum(Expr, Var, Start, End, ClosedForm) :-
+    integer(Start),
+    ( atom(End) -> Sym = End ; Sym = n ),
+    euler_sum(Expr, Var, 1, Sym, F),
+    Before is Start - 1,
+    substitute(F, Sym, Before, FBefore0),
+    simplify_closed(FBefore0, FBefore),
+    (   atom(End)
+    ->  ( FBefore == 0 -> ClosedForm = F ; simplify_closed(F - FBefore, ClosedForm) )
+    ;   number(End)
+    ->  substitute(F, Sym, End, FEnd0),
+        simplify_closed(FEnd0, FEnd),
+        ClosedForm0 = FEnd - FBefore,
+        catch(V is ClosedForm0, _, fail),
+        ( V =:= truncate(V) -> ClosedForm is truncate(V) ; ClosedForm = V )
+    ).
+
+substitute(X, Sym, Value, Value) :- X == Sym, !.
+substitute(X, _, _, X) :- atomic(X), !.
+substitute(T, Sym, Value, T1) :-
+    T =.. [F|Args],
+    maplist([A, A1]>>substitute(A, Sym, Value, A1), Args, Args1),
+    T1 =.. [F|Args1].
 
 prove_terms([], _, _, []).
 prove_terms([Term|Terms], Var, N, [Closed|Rest]) :-
@@ -18,6 +46,7 @@ prove_terms([Term|Terms], Var, N, [Closed|Rest]) :-
     prove_terms(Terms, Var, N, Rest).
 
 prove_term(Var, Var, N, N*(N+1)/2) :- !.
+prove_term(Var^1, Var, N, N*(N+1)/2) :- !.
 prove_term(Var^2, Var, N, N*(N+1)*(2*N+1)/6) :- !.
 prove_term(Var^3, Var, N, (N*(N+1)/2)^2) :- !.
 prove_term(Var^4, Var, N, N*(N+1)*(2*N+1)*(3*N^2+3*N-1)/30) :- !.
@@ -49,6 +78,13 @@ prove_term(C*Var^5, Var, N, Closed) :- number(C), !,
 prove_term(C1*Var^5*C2, Var, N, Closed) :- number(C1), number(C2), !,
     C is C1*C2,
     scale_formula(C, N^2*(N+1)^2*(2*N^2+2*N-1)/12, Closed).
+% Higher powers: the polynomial from the Euler-Maclaurin formula, computed
+% with exact fractions (em_derivation.pl).
+prove_term(Var^P, Var, N, Closed) :- integer(P), P > 5, !,
+    power_sum_polynomial(P, N, Closed).
+prove_term(C*Var^P, Var, N, Closed) :- number(C), integer(P), P > 5, !,
+    power_sum_polynomial(P, N, Poly),
+    Closed = C*(Poly).
 prove_term(-1*Inner, Var, N, Closed) :- !,
     prove_term(Inner, Var, N, InnerClosed),
     scale_formula(-1, InnerClosed, Closed).
@@ -102,6 +138,7 @@ simplify_add(A, B, A+B).
 
 simplify_sub(A, 0, A) :- !.
 simplify_sub(A, B, S) :- number(A), number(B), !, S is A - B.
+simplify_sub(A, B, A+PosB) :- number(B), B < 0, !, PosB is -B.
 simplify_sub(A, B, A-B).
 
 simplify_mul(0, _, 0) :- !.
